@@ -71,8 +71,8 @@ var daemon = new Plenteumd({
   enableWebSocket: true, // Enables a socket.io websocket server on the rpcBindPort + 1
   webSocketPassword: false, // Set this to a password to use for the privileged socket events.
   
-  // These are the standard TurtleCoind options
-  path: './Plenteumd', // Where can I find TurtleCoind?
+  // These are the standard Plenteumd options
+  path: './Plenteumd', // Where can I find Plenteumd?
   dataDir: '~/.Plenteum', // Where do you store your blockchain?
   testnet: false, // Use the testnet?
   enableCors: false, // Enable CORS support for the domain in this value
@@ -219,7 +219,7 @@ daemon.on('data', (data) => {
 
 ### Event - *desync*
 
-This event is emitted when the daemon has lost synchronization with the TurtleCoin network
+This event is emitted when the daemon has lost synchronization with the Plenteum network
 
 ```javascript
 daemon.on('descync', (daemonHeight, networkHeight, deviance) => {
@@ -259,7 +259,7 @@ daemon.on('info', (info) => {
 
 ### Event - *ready*
 
-This event is emitted when the daemon is synchronized with the TurtleCoin network and is passing all the checks we have for it. It returns the equivalent of a */getinfo* call to the RPC server with a few minor additions.
+This event is emitted when the daemon is synchronized with the Plenteum network and is passing all the checks we have for it. It returns the equivalent of a */getinfo* call to the RPC server with a few minor additions.
 
 ```javascript
 daemon.on('ready', (info) => {
@@ -912,7 +912,7 @@ All responses except for ***auth*** return data in the same format.
 
 ## License
 
-Copyright (C) 2018 Brandon Lehmann, The TurtleCoin Developers
+Copyright (C) 2018 Brandon Lehmann, The Plenteum Developers
 Copyright (C) 2018 Brandon Lehmann, The Plenteum Developers
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.

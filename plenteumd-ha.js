@@ -1,10 +1,10 @@
-// Copyright (c) 2018, Brandon Lehmann, The TurtleCoin Developers
+// Copyright (c) 2018, Brandon Lehmann, The Plenteum Developers
 //
 // Please see the included LICENSE file for more information.
 
 'use strict'
 
-const TurtleCoindRPC = require('turtlecoin-rpc').TurtleCoind
+const PlenteumdRPC = require('plenteum-rpc').Plenteumd
 const WebSocket = require('./lib/websocket.js')
 const pty = require('node-pty')
 const util = require('util')
@@ -23,9 +23,9 @@ const daemonResponses = {
 }
 const blockTargetTime = 30
 
-const TurtleCoind = function (opts) {
+const Plenteumd = function (opts) {
   opts = opts || {}
-  if (!(this instanceof TurtleCoind)) return new TurtleCoind(opts)
+  if (!(this instanceof Plenteumd)) return new Plenteumd(opts)
 
   this.pollingInterval = opts.pollingInterval || 10000
   this.maxPollingFailures = opts.maxPollingFailures || 3
@@ -37,9 +37,9 @@ const TurtleCoind = function (opts) {
   this.enableWebSocket = opts.enableWebSocket || true
   this.webSocketPassword = opts.webSocketPassword || false
 
-  // Begin TurtleCoind options
-  this.path = opts.path || path.resolve(__dirname, './TurtleCoind')
-  this.dataDir = opts.dataDir || path.resolve(os.homedir(), './.TurtleCoin')
+  // Begin Plenteumd options
+  this.path = opts.path || path.resolve(__dirname, './Plenteumd')
+  this.dataDir = opts.dataDir || path.resolve(os.homedir(), './.Plenteum')
   this.testnet = opts.testnet || false
   this.enableCors = opts.enableCors || false
   this.enableBlockExplorer = opts.enableBlockExplorer || true
@@ -119,9 +119,9 @@ const TurtleCoind = function (opts) {
     }
   })
 }
-inherits(TurtleCoind, EventEmitter)
+inherits(Plenteumd, EventEmitter)
 
-TurtleCoind.prototype.start = function () {
+Plenteumd.prototype.start = function () {
   var databaseLockfile = path.resolve(util.format('%s/DB/LOCK', this.dataDir))
   if (fs.existsSync(databaseLockfile)) {
     this.emit('error', 'Database LOCK file exists...')
@@ -147,7 +147,7 @@ TurtleCoind.prototype.start = function () {
       return false
     }
   }
-  this.emit('info', 'Attempting to start turtlecoind-ha...')
+  this.emit('info', 'Attempting to start plenteumd-ha...')
   if (!fs.existsSync(this.path)) {
     this.emit('error', '************************************************')
     this.emit('error', util.format('%s could not be found', this.path))
@@ -215,7 +215,7 @@ TurtleCoind.prototype.start = function () {
   this.emit('start', util.format('%s%s', this.path, args.join(' ')))
 }
 
-TurtleCoind.prototype.stop = function () {
+Plenteumd.prototype.stop = function () {
   // If we are currently running our checks, it's a good idea to stop them before we go kill the child process
   if (this.checkDaemon) {
     clearInterval(this.checkDaemon)
@@ -230,11 +230,11 @@ TurtleCoind.prototype.stop = function () {
   }, (this.timeout * 2))
 }
 
-TurtleCoind.prototype.write = function (data) {
+Plenteumd.prototype.write = function (data) {
   this._write(util.format('%s\r', data))
 }
 
-TurtleCoind.prototype._checkChildStdio = function (data) {
+Plenteumd.prototype._checkChildStdio = function (data) {
   if (data.indexOf(daemonResponses.started) !== -1) {
     this.emit('started')
   } else if (data.indexOf(daemonResponses.help) !== -1) {
@@ -250,7 +250,7 @@ TurtleCoind.prototype._checkChildStdio = function (data) {
   }
 }
 
-TurtleCoind.prototype._triggerDown = function () {
+Plenteumd.prototype._triggerDown = function () {
   if (!this.firstCheckPassed) return
   if (!this.trigger) {
     this.trigger = setTimeout(() => {
@@ -259,7 +259,7 @@ TurtleCoind.prototype._triggerDown = function () {
   }
 }
 
-TurtleCoind.prototype._triggerUp = function () {
+Plenteumd.prototype._triggerUp = function () {
   if (!this.firstCheckPassed) this.firstCheckPassed = true
   if (this.trigger) {
     clearTimeout(this.trigger)
@@ -267,7 +267,7 @@ TurtleCoind.prototype._triggerUp = function () {
   }
 }
 
-TurtleCoind.prototype._checkServices = function () {
+Plenteumd.prototype._checkServices = function () {
   if (!this.synced) {
     this.synced = true
     this.checkDaemon = setInterval(() => {
@@ -299,7 +299,7 @@ TurtleCoind.prototype._checkServices = function () {
   }
 }
 
-TurtleCoind.prototype._checkRpc = function () {
+Plenteumd.prototype._checkRpc = function () {
   return new Promise((resolve, reject) => {
     Promise.all([
       this.api.getInfo(),
@@ -317,7 +317,7 @@ TurtleCoind.prototype._checkRpc = function () {
   })
 }
 
-TurtleCoind.prototype._checkDaemon = function () {
+Plenteumd.prototype._checkDaemon = function () {
   return new Promise((resolve, reject) => {
     this.help = false
     this.write('help')
@@ -328,11 +328,11 @@ TurtleCoind.prototype._checkDaemon = function () {
   })
 }
 
-TurtleCoind.prototype._write = function (data) {
+Plenteumd.prototype._write = function (data) {
   this.child.write(data)
 }
 
-TurtleCoind.prototype._buildargs = function () {
+Plenteumd.prototype._buildargs = function () {
   var args = ''
   if (this.dataDir) args = util.format('%s --data-dir %s', args, this.dataDir)
   if (this.testnet) args = util.format('%s --testnet', args)
@@ -381,15 +381,15 @@ TurtleCoind.prototype._buildargs = function () {
   return args.split(' ')
 }
 
-TurtleCoind.prototype._setupAPI = function () {
-  this.api = new TurtleCoindRPC({
+Plenteumd.prototype._setupAPI = function () {
+  this.api = new PlenteumdRPC({
     host: this.rpcBindIp,
     port: this.rpcBindPort,
     timeout: this.timeout
   })
 }
 
-TurtleCoind.prototype._setupWebSocket = function () {
+Plenteumd.prototype._setupWebSocket = function () {
   if (this.enableWebSocket) {
     this.webSocket = new WebSocket({
       port: (this.rpcBindPort + 1),
@@ -487,7 +487,7 @@ TurtleCoind.prototype._setupWebSocket = function () {
   }
 }
 
-TurtleCoind.prototype._registerWebSocketClientEvents = function (socket) {
+Plenteumd.prototype._registerWebSocketClientEvents = function (socket) {
   var that = this
   var events = Object.getPrototypeOf(this.api)
   events = Object.getOwnPropertyNames(events).filter((f) => {
@@ -528,4 +528,4 @@ function precisionRound (number, precision) {
   return Math.round(number * factor) / factor
 }
 
-module.exports = TurtleCoind
+module.exports = Plenteumd
