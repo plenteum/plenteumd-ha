@@ -1,6 +1,6 @@
-# TurtleCoind High-Availability Daemon Wrapper
+# Plenteumd High-Availability Daemon Wrapper
 
-This project is designed to wrap the TurtleCoind daemon on a *nix system and monitor it for hangups, locks, fork, or other events that cause the daemon to stop responding to requests in an accurate manner.
+This project is designed to wrap the Plenteumd daemon on a *nix system and monitor it for hangups, locks, fork, or other events that cause the daemon to stop responding to requests in an accurate manner.
 
 The sample **service.js** includes how to automatically restart the daemon if it hangs, locks, or otherwise stops responding.
 
@@ -13,7 +13,7 @@ The sample **service.js** includes how to automatically restart the daemon if it
 5. [Documentation](#documentation)
    1. [Methods](#methods)
    2. [Events](#events)
-   3. [TurtleCoind RPC API Interface](#turtlecoind-rpc-api-interface)
+   3. [Plenteumd RPC API Interface](#plenteumd-rpc-api-interface)
    4. [WebSocket Connections](#websocket-connections)
 
 ## To Do
@@ -23,20 +23,20 @@ N/A
 ## Dependencies
 
 * [NodeJS v8.x](https://nodejs.org/)
-* [TurtleCoind](https://github.com/turtlecoin/turtlecoin/releases) v0.5.0 or higher
+* [Plenteumd](https://github.com/plenteum/plenteum/releases)
 
 ## Easy Start
 
-You *must* copy ```TurtleCoind``` into the ```turtlecoind-ha``` folder for the easy start process to occur.
+You *must* copy ```Plenteumdd``` into the ```plenteumd-ha``` folder for the easy start process to occur.
 
 ```bash
-git clone https://github.com/brandonlehmann/turtlecoind-ha.git
-cd turtlecoind-ha
-cp <TurtleCoind> .
+git clone https://github.com/plenteum/plenteumd-ha.git
+cd plenteumd-ha
+cp <Plenteumd> .
 npm i & node service.js
 ```
 
-**It is highly recommended that you use [checkpoints](https://github.com/turtlecoin/turtlecoin/wiki/Using-checkpoints) when starting fresh or you'll need to wait a while for the sync to occur.**
+**It is highly recommended that you use checkpoints when starting fresh or you'll need to wait a while for the sync to occur.**
 
 ## Keep it Running
 
@@ -48,7 +48,7 @@ npm install -g pm2
 pm2 startup
 pm2 install pm2-logrotate
 
-pm2 start service.js --name turtlecoind
+pm2 start service.js --name plenteumd
 pm2 save
 ```
 
@@ -56,11 +56,11 @@ pm2 save
 
 ### Initialization
 
-Practically all TurtleCoind command line arguments are exposed in the constructor method. Simply include them in your list of options to get activate or use them. Default values are defined below.
+Practically all Plenteumd command line arguments are exposed in the constructor method. Simply include them in your list of options to get activate or use them. Default values are defined below.
 
 ```javascript
-var daemon = new TurtleCoind({
-  // These are our TurtleCoind-ha options
+var daemon = new Plenteumd({
+  // These are our Plenteumd-ha options
   pollingInterval: 10000, // How often to check the daemon in milliseconds
   maxPollingFailures: 3, // How many polling intervals can fail before we emit a down event?
   checkHeight: true, // Check the daemon block height against known trusted nodes
@@ -72,8 +72,8 @@ var daemon = new TurtleCoind({
   webSocketPassword: false, // Set this to a password to use for the privileged socket events.
   
   // These are the standard TurtleCoind options
-  path: './TurtleCoind', // Where can I find TurtleCoind?
-  dataDir: '~/.TurtleCoin', // Where do you store your blockchain?
+  path: './Plenteumd', // Where can I find TurtleCoind?
+  dataDir: '~/.Plenteum', // Where do you store your blockchain?
   testnet: false, // Use the testnet?
   enableCors: false, // Enable CORS support for the domain in this value
   enableBlockExplorer: true, // Enable the block explorer
@@ -291,7 +291,7 @@ daemon.on('ready', (info) => {
 
 ### Event - *start*
 
-This event is emitted when the daemon starts. The callback contains the command line arguments supplied to TurtleCoind.
+This event is emitted when the daemon starts. The callback contains the command line arguments supplied to Plenteumd.
 
 ```javascript
 daemon.on('start', (executablePath, args) => {
@@ -321,7 +321,7 @@ daemon.on('stopped', () => {
 
 ### Event - *synced*
 
-This event is emitted when the daemon has synchronized with the TurtleCoin network.
+This event is emitted when the daemon has synchronized with the Plenteum network.
 
 ```javascript
 daemon.on('synced', () => {
@@ -348,9 +348,9 @@ daemon.on('topblock', (height) => {
   // do something
 })
 ```
-## TurtleCoind RPC API Interface
+## Plenteumd RPC API Interface
 
-As we can actually run this wrapper inside another nodeJS project, we expose all of the TurtleCoind RPC API commands via the ```daemon.api``` property. Each of the below methods are [Javascript Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises). For safety sake, **always** handle your promise catches as we do use them properly.
+As we can actually run this wrapper inside another nodeJS project, we expose all of the Plenteumd RPC API commands via the ```daemon.api``` property. Each of the below methods are [Javascript Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises). For safety sake, **always** handle your promise catches as we do use them properly.
 
 Methods noted having options have parameters that may be *optional* or *required* as documented.
 
@@ -913,6 +913,7 @@ All responses except for ***auth*** return data in the same format.
 ## License
 
 Copyright (C) 2018 Brandon Lehmann, The TurtleCoin Developers
+Copyright (C) 2018 Brandon Lehmann, The Plenteum Developers
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
 
