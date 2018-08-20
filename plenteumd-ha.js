@@ -21,7 +21,7 @@ const daemonResponses = {
   help: 'Show this help',
   block: 'New Top Block Detected:'
 }
-const blockTargetTime = 30
+const blockTargetTime = 120
 
 const Plenteumd = function (opts) {
   opts = opts || {}
@@ -45,9 +45,9 @@ const Plenteumd = function (opts) {
   this.enableBlockExplorer = opts.enableBlockExplorer || true
   this.loadCheckpoints = opts.loadCheckpoints || false
   this.rpcBindIp = opts.rpcBindIp || '0.0.0.0'
-  this.rpcBindPort = opts.rpcBindPort || 11898
+  this.rpcBindPort = opts.rpcBindPort || 44016
   this.p2pBindIp = opts.p2pBindIp || false
-  this.p2pBindPort = opts.p2pBindPort || false
+  this.p2pBindPort = opts.p2pBindPort || 44015
   this.p2pExternalPort = opts.p2pExternalPort || false
   this.allowLocalIp = opts.allowLocalIp || false
   this.peers = opts.peers || false
