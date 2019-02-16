@@ -1,4 +1,5 @@
-// Copyright (c) 2018, Brandon Lehmann, The Plenteum Developers
+// Copyright (c) 2019, Brandon Lehmann, The TurtleCoin Developers
+// Copyright (c) 2019, The Plenteum Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -21,14 +22,19 @@ const daemonResponses = {
   help: 'Show this help',
   block: 'New Top Block Detected:'
 }
-const blockTargetTime = 120
+const blockTargetTime = 30
 
 const Plenteumd = function (opts) {
   opts = opts || {}
   if (!(this instanceof Plenteumd)) return new Plenteumd(opts)
 
+  /*
+    This is NOT where you set your options at. If you're changing
+    values here, you're doing it wrong. These are the default values
+    used if you don't specify them when you create the object.
+  */
   this.pollingInterval = opts.pollingInterval || 10000
-  this.maxPollingFailures = opts.maxPollingFailures || 3
+  this.maxPollingFailures = opts.maxPollingFailures || 6
   this.checkHeight = opts.checkHeight || true
   this.maxDeviance = opts.maxDeviance || 5
   this.clearP2pOnStart = opts.clearP2pOnStart || true
@@ -38,16 +44,18 @@ const Plenteumd = function (opts) {
   this.webSocketPassword = opts.webSocketPassword || false
 
   // Begin Plenteumd options
-  this.path = opts.path || path.resolve(__dirname, './Plenteumd')
-  this.dataDir = opts.dataDir || path.resolve(os.homedir(), './.Plenteum')
+  this.path = opts.path || path.resolve(__dirname, './Plenteumd' + ((os.platform() === 'win32') ? '.exe' : ''))
+  this.dataDir = opts.dataDir || path.resolve(os.homedir(), './.plenteum')
+  this.logFile = opts.logFile || path.resolve(__dirname, './Plenteumd.log')
+  this.logLevel = opts.logLevel || 2
   this.testnet = opts.testnet || false
   this.enableCors = opts.enableCors || false
   this.enableBlockExplorer = opts.enableBlockExplorer || true
   this.loadCheckpoints = opts.loadCheckpoints || false
   this.rpcBindIp = opts.rpcBindIp || '0.0.0.0'
-  this.rpcBindPort = opts.rpcBindPort || 44016
+  this.rpcBindPort = opts.rpcBindPort || 11898
   this.p2pBindIp = opts.p2pBindIp || false
-  this.p2pBindPort = opts.p2pBindPort || 44015
+  this.p2pBindPort = opts.p2pBindPort || false
   this.p2pExternalPort = opts.p2pExternalPort || false
   this.allowLocalIp = opts.allowLocalIp || false
   this.peers = opts.peers || false
@@ -303,10 +311,9 @@ Plenteumd.prototype._checkRpc = function () {
   return new Promise((resolve, reject) => {
     Promise.all([
       this.api.getInfo(),
-      this.api.getHeight(),
-      this.api.getTransactions()
+      this.api.getHeight()
     ]).then((results) => {
-      if (results[0].height === results[1].height && results[0].status === results[1].status && results[1].status === results[2].status) {
+      if (results[0].height === results[1].height && results[0].status === results[1].status) {
         return resolve(results)
       } else {
         return reject(new Error('Daemon is returning inconsistent results'))
@@ -335,6 +342,8 @@ Plenteumd.prototype._write = function (data) {
 Plenteumd.prototype._buildargs = function () {
   var args = ''
   if (this.dataDir) args = util.format('%s --data-dir %s', args, this.dataDir)
+  if (this.logFile) args = util.format('%s --log-file %s', args, this.logFile)
+  if (this.logLevel) args = util.format('%s --log-level %s', args, this.logLevel)
   if (this.testnet) args = util.format('%s --testnet', args)
   if (this.enableCors) args = util.format('%s --enable-cors %s', args, this.enableCors)
   if (this.enableBlockExplorer) args = util.format('%s --enable-blockexplorer', args)

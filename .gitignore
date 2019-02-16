@@ -25,7 +25,6 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json
 
 # Runtime data
 pids
@@ -165,4 +164,7 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+checkpoints.csv
 
+# Visual Studio
+.vs
