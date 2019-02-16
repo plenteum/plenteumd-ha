@@ -41,7 +41,7 @@ cp <Plenteumd> .
 sudo npm install & node service.js
 ```
 
-**It is highly recommended that you use [checkpoints](https://github.com/plenteum/plenteum/wiki/Using-checkpoints) when starting fresh or you'll need to wait a while for the sync to occur.**
+**It is highly recommended that you use [checkpoints](https://github.com/plenteum/checkpoints) when starting fresh or you'll need to wait a while for the sync to occur.**
 
 ## Keep it Running
 
@@ -82,7 +82,7 @@ var daemon = new Plenteumd({
   testnet: false, // Use the testnet?
   enableCors: false, // Enable CORS support for the domain in this value
   enableBlockExplorer: true, // Enable the block explorer
-  loadCheckpoints: false, // If set to a path to a file, will supply that file to the daemon if it exists.
+  loadCheckpoints: 'checkpoints.csv', // If set to a path to a file, will supply that file to the daemon if it exists.
   rpcBindIp: '0.0.0.0', // What IP to bind the RPC server to
   rpcBindPort: 11898, // What Port to bind the RPC server to
   p2pBindIp: '0.0.0.0', // What IP to bind the P2P network to
