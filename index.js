@@ -45,7 +45,7 @@ const Plenteumd = function (opts) {
 
   // Begin Plenteumd options
   this.path = opts.path || path.resolve(__dirname, './Plenteumd' + ((os.platform() === 'win32') ? '.exe' : ''))
-  this.dataDir = opts.dataDir || path.resolve(os.homedir(), './.plenteum')
+  this.dataDir = opts.dataDir || path.resolve(os.homedir(), './.Plenteum')
   this.logFile = opts.logFile || path.resolve(__dirname, './Plenteumd.log')
   this.logLevel = opts.logLevel || 2
   this.testnet = opts.testnet || false
@@ -53,7 +53,7 @@ const Plenteumd = function (opts) {
   this.enableBlockExplorer = opts.enableBlockExplorer || true
   this.loadCheckpoints = opts.loadCheckpoints || false
   this.rpcBindIp = opts.rpcBindIp || '0.0.0.0'
-  this.rpcBindPort = opts.rpcBindPort || 11898
+  this.rpcBindPort = opts.rpcBindPort || 44016
   this.p2pBindIp = opts.p2pBindIp || false
   this.p2pBindPort = opts.p2pBindPort || false
   this.p2pExternalPort = opts.p2pExternalPort || false
