@@ -1,5 +1,5 @@
-// Copyright (c) 2019, Brandon Lehmann, The TurtleCoin Developers
-// Copyright (c) 2019, The Plenteum Developers
+// Copyright (c) 2018-2019, The TurtleCoin Developers
+// Copyright (c) 2018-2019, The Plenteum Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -66,7 +66,7 @@ const Plenteumd = function (opts) {
   this.dbThreads = opts.dbThreads || false
   this.dbMaxOpenFiles = opts.dbMaxOpenFiles || false
   this.dbWriteBufferSize = opts.dbWriteBufferSize || false
-  this.dbReadCacheSize = opts.dbReadCacheSize || false
+  this.dbReadBufferSize = opts.dbReadBufferSize || false
   this.feeAddress = opts.feeAddress || false
   this.feeAmount = opts.feeAmount || 0
 
@@ -94,7 +94,7 @@ const Plenteumd = function (opts) {
         } else {
           if (percent > 100) percent = 100
         }
-        this.emit('syncing', {height: result.height, network_height: result.network_height, percent: percent})
+        this.emit('syncing', { height: result.height, network_height: result.network_height, percent: percent })
         if (result.height === result.network_height && result.height > 1) {
           this._checkServices()
           this.synced = true
@@ -155,7 +155,7 @@ Plenteumd.prototype.start = function () {
       return false
     }
   }
-  this.emit('info', 'Attempting to start plenteumd-ha...')
+  this.emit('info', 'Attempting to start Plenteumd-ha...')
   if (!fs.existsSync(this.path)) {
     this.emit('error', '************************************************')
     this.emit('error', util.format('%s could not be found', this.path))
@@ -384,7 +384,7 @@ Plenteumd.prototype._buildargs = function () {
   if (this.dbThreads) args = util.format('%s --db-threads %s', args, this.dbThreads)
   if (this.dbMaxOpenFiles) args = util.format('%s --db-max-open-files %s', args, this.dbMaxOpenFiles)
   if (this.dbWriteBufferSize) args = util.format('%s --db-write-buffer-size %s', args, this.dbWriteBufferSize)
-  if (this.dbReadCacheSize) args = util.format('%s --db-read-cache-size %s', args, this.dbReadCacheSize)
+  if (this.dbReadBufferSize) args = util.format('%s --db-read-buffer-size %s', args, this.dbReadBufferSize)
   if (this.feeAddress) args = util.format('%s --fee-address %s', args, this.feeAddress)
   if (this.feeAmount !== 0) args = util.format('%s --fee-amount %s', args, this.feeAmount)
   return args.split(' ')
@@ -439,59 +439,59 @@ Plenteumd.prototype._setupWebSocket = function () {
     })
 
     this.on('stopped', (exitcode) => {
-      this.webSocket.broadcastProtected({event: 'stopped', data: exitcode})
+      this.webSocket.broadcastProtected({ event: 'stopped', data: exitcode })
     })
 
     this.on('data', (data) => {
-      this.webSocket.broadcastProtected({event: 'data', data})
+      this.webSocket.broadcastProtected({ event: 'data', data })
     })
 
     this.on('error', (err) => {
-      this.webSocket.broadcastProtected({event: 'error', data: err})
+      this.webSocket.broadcastProtected({ event: 'error', data: err })
     })
 
     this.on('info', (info) => {
-      this.webSocket.broadcastProtected({event: 'info', data: info})
+      this.webSocket.broadcastProtected({ event: 'info', data: info })
     })
 
     this.on('warning', (warning) => {
-      this.webSocket.broadcastProtected({event: 'info', data: warning})
+      this.webSocket.broadcastProtected({ event: 'info', data: warning })
     })
 
     this.on('start', () => {
-      this.webSocket.broadcastProtected({event: 'start'})
+      this.webSocket.broadcastProtected({ event: 'start' })
     })
 
     this.on('started', () => {
-      this.webSocket.broadcastProtected({event: 'started'})
+      this.webSocket.broadcastProtected({ event: 'started' })
     })
 
     this.on('down', () => {
-      this.webSocket.broadcastProtected({event: 'down'})
+      this.webSocket.broadcastProtected({ event: 'down' })
     })
 
     this.on('syncing', (info) => {
-      this.webSocket.broadcastProtected({event: 'syncing', data: info})
+      this.webSocket.broadcastProtected({ event: 'syncing', data: info })
     })
 
     this.on('synced', () => {
-      this.webSocket.broadcastProtected({event: 'synced'})
+      this.webSocket.broadcastProtected({ event: 'synced' })
     })
 
     this.on('ready', (info) => {
-      this.webSocket.broadcastProtected({event: 'ready', data: info})
+      this.webSocket.broadcastProtected({ event: 'ready', data: info })
     })
 
     this.on('desync', () => {
-      this.webSocket.broadcastProtected({event: 'desync'})
+      this.webSocket.broadcastProtected({ event: 'desync' })
     })
 
     this.on('topblock', (height) => {
-      this.webSocket.broadcast({event: 'topblock', data: height})
+      this.webSocket.broadcast({ event: 'topblock', data: height })
     })
 
     this.on('block', (block) => {
-      this.webSocket.broadcast({event: 'block', data: block})
+      this.webSocket.broadcast({ event: 'block', data: block })
     })
   }
 }
@@ -515,9 +515,9 @@ Plenteumd.prototype._registerWebSocketClientEvents = function (socket) {
         }
         data.nonce = data.nonce || nonce()
         that.api[evt](data).then((result) => {
-          socket.emit(evt, {nonce: data.nonce, data: result})
+          socket.emit(evt, { nonce: data.nonce, data: result })
         }).catch((err) => {
-          socket.emit(evt, {nonce: data.nonce, error: err.toString()})
+          socket.emit(evt, { nonce: data.nonce, error: err.toString() })
         })
       })
     })()
