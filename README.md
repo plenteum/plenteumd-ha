@@ -37,7 +37,7 @@ You *must* copy ```Plenteumd``` into the ```plenteumd-ha``` folder for the easy 
 ```bash
 git clone https://github.com/plenteum/plenteumd-ha.git
 cd plenteumd-ha
-cp <plenteumd> .
+cp <Plenteumd> .
 sudo npm install & node service.js
 ```
 
@@ -86,7 +86,7 @@ var daemon = new Plenteumd({
   rpcBindIp: '0.0.0.0', // What IP to bind the RPC server to
   rpcBindPort: 44016, // What Port to bind the RPC server to
   p2pBindIp: '0.0.0.0', // What IP to bind the P2P network to
-  p2pBindPort: 11897, // What Port to bind the P2P network to
+  p2pBindPort: 44015, // What Port to bind the P2P network to
   p2pExternalPort: 0, // What External Port to bind the P2P network to for those behind NAT
   allowLocalIp: false, // Add our own IP to the peer list?
   peers: false, // Manually add the peer(s) to the list. Allows for a string or an Array of strings.
@@ -805,7 +805,7 @@ Gets a block hash by height.
 
 ```javascript
 {
-  "address": "TRTLv27NRnfaGLvxDuE1SfQt2zbvfEiTNJtFcBNZwUAAQYL1oxejK1c8PaCTCa61he99a31So9KNaQ4kGkKjjstwhyM2FqdwUyU",
+  "address": "PLev27NRnfaGLvxDuE1SfQt2zbvfEiTNJtFcBNZwUAAQYL1oxejK1c8PaCTCa61he99a31So9KNaQ4kGkKjjstwhyM2FqdwUyU",
   "amount": 5000,
   "status": "OK"
 }

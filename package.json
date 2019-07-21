@@ -1,6 +1,6 @@
 {
   "name": "plenteumd-ha",
-  "version": "0.14.1",
+  "version": "0.14.2",
   "description": "Wraps the Plenteumd Daemon and helps keep the daemon synchronized and ready for connections.",
   "main": "index.js",
   "scripts": {
